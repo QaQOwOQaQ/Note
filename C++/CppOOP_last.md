@@ -1,11 +1,5 @@
 # .Appendix
 
-## 0x00 Reference
-
-[侯捷github](https://github.com/coder0818/-C-)
-
-[资料](https://github.com/coder0818/-C-/tree/master/C++-newC++11&14-HouJie)
-
 ## 0x01 Prologue
 
 一、二：object based
@@ -47,12 +41,6 @@ prototype：原型
 explicit：明白的，明去的，清楚的
 
 signatrue：签名
-
-parenthses：小括号， ()
-
-barces：大括号，{}
-
-alias：别名，化名
 
 ## 0x03 Tips
 
@@ -712,40 +700,7 @@ operator delete 内部调动 free();
 
 
 
-比较好的做法应该是自己用一个命名空间封装std，然后using 自己的那个命名空间。
-
-`x=::a;`  a 是全局global作用域下的，不声明 namespace 就是默认处于全局作用域下。例如：
-
-``` C++
-#include <iostream>
-#include <cstring>
-#include <algorithm>
-
-using namespace std;
-
-namespace xjy {
-    int a = 10;
-    void f() {
-        cout << "namespace:xjy" << endl;
-    }
-}
-
-int a = 2020;
-void f() {
-    cout << "namespce:global" << endl;
-}
-
-int main()
-{
-    cout << ::a << endl;
-    cout << xjy::a << endl;
-    ::f();
-    xjy::f();
-    return 0;
-}
-```
-
-
+比较好的做法应该是自己用一个命名空间封装std，然后using 自己的那个命名空间
 
 ### 3. Examples
 
@@ -863,7 +818,7 @@ int main()
 
 [Reference](https://blog.csdn.net/iotflh/article/details/114789270)
 
-# 四、Oritened Object
+# 四、Oritened object
 
 ## 0x01 Class Relation
 
@@ -1484,15 +1439,13 @@ error: request for member 'func' in 'p', which is of non-class type 'test()'
 
 ### 2. function template
 
-函数模版在编译后得到的是一个 “半成品”，它不一定能保证使用。意思就是模版本身编译可以通过，当真正使用时会再编译一次（这次实参的类型已经确定了），这时能不能通过就不确定了（类型不合适之类，或者你得类没有重载相应的运算符）。
+模版在编译后得到的是一个 “半成品”，它不一定能保证使用。意思就是模版本身编译可以通过，当真正使用时会再编译一次（这次实参的类型已经确定了），这时能不能通过就不确定了。
 
 ### 4. member template
 
 成员模板。
 
-向上转型（**up-cast**）：在将继承关系画成图的时候，我们通常将父类画在图的上方，子类画在图的下方，子类指向父类。因为子类到父类的转换我们形象的称其为 “向上转型”。
-
-在成员模板中，子类的对象可以传给父类，因为子类从父类继承，它拥有父类的东西，但是父类不一定包含子类的东西，所以说父类的对象不可以传给父类。当我们把一个子类的对象传给父类的时候，我们说发生了 “**up-case**”。
+向上转型（up-cast）：在将继承关系画成图的时候，我们通常将父类画在图的上方，子类画在图的下方，子类指向父类。因为子类到父类的转换我们形象的称其为 “向上转型”。
 
 如图：（我们通常用用△来表示继承关系，用◇箭头表示 point 关系，point 关系的 ◇ 在指针一方而不是指向的对象一方，继承关系的△在父类乙方）![IMG](https://s3.bmp.ovh/imgs/2022/10/25/90eda9ffa0c8f118.png)
 
@@ -1552,217 +1505,58 @@ int main()
 }
 ```
 
-你可能会问，为什么可以把子类的传给父类，而父类不可以传给子类？
 
-> s别钻牛角筋。你只需要牢记，面向对象的考虑都是从现实生活考虑的。
->
-> 现在假设动物是父类，哺乳类和鸟类分别是子类。（**up-cast**）
->
-> 哺乳动物和鸟类是动物，但是动物不一定是鸟类或者哺乳类。
->
-> 就是这么简单。
 
 ### 5. specialization
 
-#### 5.1 介绍
+一些名词：
 
-模板特化就是将模板中的一部分类型抽离出来，明确的规定好是什么类型。
+* (full) specialization：模版特化（全特化）
 
-模板特化的种类：
+* paritical specialization：模版偏特化（局部特化）
 
-1. (full) specialization：模版特化（全特化）
+* template template parameter：模版模版参数
 
-2. paritical specialization：模版偏特化（局部特化）
-
-   (1) 个数的偏特化
-
-   (2) 范围的偏特化
-
-3. template template parameter：模版模版参数
-
-语法：就如同我们前面说的那样，模板特化就是在原模板的基础上，将一部分类型从模板中 “抽离” 出来，直接写在类名的后面，然后在模板中删去这个类型即可。但是在偏特化中，即使我们只是抽取了一部分类型，也要把所有类型写在类中。
-
-#### 5. 2 全特化和偏特化
-
-类模板全特化的例子：
+模板全特化的例子：
 
 ``` C++
 #include <iostream>
 
 using namespace std;
 
-// 模板
-template<class T1, class T2>
+template<class key>
 class Hash {
 public:
-    Hash() { cout << "T1 && T2" << endl; }
+    void f(key x) { cout << "key: " << x << endl; }
 };
 
-// 模板全特化
-template<> // 抽离 class key
-class Hash<int, char> { // 加上 <int>
-public:
-    Hash() { cout << "int && char" << endl; }
-};
-
-// (个数)模板偏特化 1
-template<class T2>
-class Hash<T2, int> {
-public:
-    Hash() { cout << "T2 && int" << endl; }
-};
-
-// (个数)模板偏特化 2
-template<class T2>
-class Hash<int, T2> {
-public:
-    Hash() { cout << "int && T2" << endl; }
-};
-
-// (范围)模板偏特化 1
-template<class T1, class T2>
-class Hash<T1*, T2*> {
-public:
-    Hash() { cout << "T1* && T2*" << endl; }
-};
-
-// (范围)模板偏特化 2
-template<class T2>
-class Hash<int*, T2*> {
-public:
-    Hash() { cout << "int* && T2*" << endl; }
-};
-
-int main()
-{
-    Hash<int,  char>   h1;    // int && char
-    // Hash<int,  int>  h2; // ambiguous
-    Hash<char, char>   h3;    // T1 && T2
-    Hash<char, int>    h4;    // T2 && int
-    Hash<int*, int*>   h5;    // int* && T2*
-    Hash<char*, char*> h6;    // T1* && T2*
-    return 0;
-}
-```
-
-当我们将模板的类型固定为具体类型（指定类型的指针也是具体类型）的时候，我们称其为**个数偏特化**，如果固定为一个指针（没有指定类型），称为**范围偏特化**。
-
-可以发现，模板特化与模板可以共存，并且当我们传入的类型可以从特化的模板中匹配时，会**优先考虑特化的模板**，如果有很多个特化的模板可供选择，选择**特化程度最高的**。
-
-另外，当我们声明 h2 的时候会产生二义性，这是因为两个个数偏特化的模板都符合要求，并且优先级相同，编译器不知道调用那个了。同样 h7 也会产生二义性，因为个数偏特化2 和 范围偏特化1 发生了冲突。
-
-由此，我们可以发现模板特化很容易产生冲突啊。
-
-上面的例子都是特化类模板，如果我们特化的是函数模板呢？加入此时同时存在普通函数，特化模板，纯模板，函数调用的优先级是什么呢?
-
-> 普通函数的优先级 > 特化 > 非特化
-
-例如：
-
-``` C++
-#include <iostream>
-using namespace std;
- 
-template<typename T1, typename T2>
-void func(T1 a, T2 b) {
-    cout << "template<T1, T2> func" << endl;
-}
- 
 template<>
-void func(int a, int b) {
-    cout << "template<int,int> func" << endl;
-}
-
-template<typename T2>
-void func(int a, T2 b) {
-    cout << "template<int,int> func" << endl;
-}
-
-void func(int a, int b) {
-    cout << "normal func" << endl;
-}
- 
-int main() {
-    int a = 3, b = 4;
-    char c = 'A';
-    double d = 3.14;
-    func(a, b); // int,int
-    func(a, d); // int, double
-    func(c, d); // char, double
- 
-    return 0;
-}
-/*normal func
-template<int,int> func
-template<T1, T2> func*/
-```
-
-使用普通函数重载和使用模板特化还是有不同之处，主要表现在如下三个方面：
-
-1. 如果使用普通重载函数，那么不管是否发生实际的函数调用，都会在目标文件中生成该函数的二进制代码。而如果使用模板的特化版本，除非发生函数调用，否则不会在目标文件中包含特化模板函数的二进制代码。这符合函数模板的“**惰性实例化**”准则。
-2. 如果使用普通重载函数，那么在分离编译模式下，需要在各个源文件中包含重载函数的申明，否则在某些源文件中就会使用模板函数，而不是重载函数。
-
-3. 模板特化版本还是模板，必须放到头文件里面。普通函数重载得放在.c和.cpp里面。
-
-[为什么不该特化函数模板](https://www.jianshu.com/p/e78d9d3bf535)
-
-#### 5.3 模板模板参数
-
-模板模板参数的含义就是模板的一个参数又是一个模板。
-
-例如：[参考自](https://blog.csdn.net/men_wen/article/details/74033327)
-
-```C++
-#include <iostream>
-#include <cstring>
-#include <algorithm>
-#include <set>
-#include <list>
-#include <vector>
-#include <map>
-
-using namespace std;
-
-// 模板类 XCls 的一个参数是一个又是一个模板
-template<typename T, 
-        template<typename U> 
-        typename Container
-        >
-class TT
-{
-    public:
-        Container<T> c;
+class Hash<int> {
+public:
+    void f(int x) { cout << "int: " << x << endl; }
 };
 
-template<typename T>
-class Bar
-{
-    public:
-        T t;
+template<>
+class Hash<char> {
+public:
+    void f(char ch) { cout << "char: " << ch << endl; }
 };
-
-template<typename T1, typename T2 = int>
-class Foo
-{
-    public:
-        T1 t1;
-        T2 t2;
-};
-
 
 int main()
 {
-    TT<string, Bar> mylst1;
-    TT<string, Foo> mylst2;
-    // 很奇怪
-    // TT<string, list>   mylst3;
-    // TT<string, map>    mylst4;
-    TT<string, set>    mylst5;
-    TT<string, vector> mylst6;
+    Hash<int> h1;
+    h1.f(56);
+    Hash<double> h2;
+    h2.f(56);
+    Hash<char> h3;
+    h3.f(56);
     return 0;
 }
-
 ```
+
+[reference](https://blog.csdn.net/roufoo/article/details/116267068)
+
+[reference](https://www.jianshu.com/p/e78d9d3bf535)
 
 
 
@@ -1785,25 +1579,6 @@ reference 就是一种漂亮的 pointer
 [[4]](https://blog.csdn.net/coutamg/article/details/61924902?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_baidulandingword~default-0-61924902-blog-100904422.pc_relevant_layerdownloadsortv1&spm=1001.2101.3001.4242.1&utm_relevant_index=3)
 
 signature签名, const算函数签名，但是引用不算
-
-string 内部是一个指针
-
-``` C++
-#include <iostream>
-#include <cstring>
-#include <algorithm>
-
-using namespace std;
-
-int main()
-{
-    string s = "sddsdasa";
-    cout << sizeof(s) << endl;
-    return 0;
-}
-```
-
-
 
 ## 0x06 vptr && vtbl
 
@@ -1935,11 +1710,9 @@ int main()
 }
 ```
 
-动态绑定的三个条件：指针调用。向上转型。调用虚函数。
 
 
-
-## 0x07 class VS. struct in C++
+## 0x07 class VS. startct in C++
 
 [C++](http://c.biancheng.net/cplus/) 中保留了C语言的 struct 关键字，并且加以扩充。在C语言中，struct 只能包含成员变量，不能包含成员函数。而在C++中，struct 类似于 class，既可以包含成员变量，又可以包含成员函数。
 
@@ -1952,9 +1725,74 @@ C++中的 struct 和 class 基本是通用的，唯有几个细节不同：
 
 C++ 没有抛弃C语言中的 struct 关键字，其意义就在于给C语言程序开发人员有一个归属感，并且能让C++编译器兼容以前用C语言开发出来的项目。
 
-**在编写C++代码时，我强烈建议使用 class 来定义类，而使用 struct 来定义单纯的结构体（无函数），这样做语义更加明确。**
+**在编写C++代码时，我强烈建议使用 class 来定义类，而使用 struct 来定义结构体，这样做语义更加明确。**
 
-在 C 语言中，结构体内无法声明函数，但是我们增加一层抽象（计算机的问题总是可以通过抽象解决），在结构内声明一个指针，让这个指针指向某个函数。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## ??? 
+
+up-cast
+
+语法糖
+
+动态绑定的三个条件：指针调用。向上转型。调用虚函数。
+
+string 内部是一个指针
+
+``` C++
+#include <iostream>
+#include <cstring>
+#include <algorithm>
+
+using namespace std;
+
+int main()
+{
+    string s = "sddsdasa";
+    cout << sizeof(s) << endl;
+    return 0;
+}
+```
+
+
+
+`x=::a;`  a 是全局global作用域下的
+
+new：
+
+new ，operator new，array new，placement new
+
+STRUCT
 
 ``` c++
 #include <stdio.h>
@@ -1989,697 +1827,95 @@ int main()
     printf("data: %d\n", s.data);
     s.p1();
     printf("p2: %d\n", s.p2(1024));
+   
+   
    return 0;
 }
 ```
 
 
 
-## 0x08 Using
 
-### 1. management namespace
 
-配合命名空间，对命名空间权限进行管理**
-
-```c++
-using namespace std;//释放整个命名空间到当前作用域
-using std::cout;    //释放某个变量到当前作用域
-```
-
-### 2. type alias
-
-类型重命名。作用等同typedef，但是逻辑上更直观。
-
-``` C++
-#include <iostream>
-#include <cstring>
-#include <algorithm>
-
-using namespace std;
-
-typedef void (*tptr)();
-using uptr = void(*)();
-
-void f() 
-{
-    cout << "you call f^ ^" << endl;
-}
-
-int main()
-{
-    tptr tp = f;
-    uptr up = f;
-    tp();
-    up();
-    
-    return 0;
-}
-```
+typename / class 历史遗留问题
 
 
 
-### 3. inherit permission
+# 六、 C++ 2.0
 
-继承体系中，改变部分接口的继承权限。
+C++ standard之演化
 
-有这样一种应用场景，比如我们需要私有继承一个基类，然后又想将基类中的某些 public 接口在子类对象实例化后对外开放直接使用。如下即可
+C++98 (1.0)
 
-[附：私有继承](https://zhuanlan.zhihu.com/p/376368003)
-
-### 4.TODO: VS. typedef & define
-
-
-
-## 0x09 delete & new 
-
-我们在前面已经提到过，调用 new 和 delete 时编译器会转化为调用 operator new 和 operator delete，而 operator new 和 operator delete 的底层调用是 malloc 和 free。也就是对 malloc 和 free 的封装。
-
-我们可以重载 new 和 delete，通过重载 operator new 和 operator delete，实际上就是以我们自己的方式封装 malloc 和 free。
-
-[重载的 delete 为什么不能执行](https://bbs.csdn.net/topics/390822574)
-
-new ：operator new，array new，placement new
-
-重载的 new 的第一个参数的类型必须是 `size_t` 。我们在调用 new 函数的时候，并不需要将 size_t 作为参数传入参数列表，而是在 new 后面紧跟着一个类型，例如： `new int;` 而不是 `new(4);` 或者 `new(int);`
-
-所以说，在我们 placement new 的时候，为 new 的参数列表中传入 n 个参数，那么实际上 new 的参数列表中有 n+1 个参数。
-
-![img](https://s3.bmp.ovh/imgs/2022/10/27/1f9bf40a891a34f9.png)
-
-例子：
-
-``` C++
-#include <iostream>
-#include <cstring>
-#include <cstdlib>
-
-using namespace std;
-
-void *my_Alloc(size_t size)
-{
-    // cout << "you call myAlloc" << endl;
-    malloc(size);
-}
-
-void my_Free(void *ptr)
-{
-    // cout << "you all myFree" << endl;
-    free(ptr);
-}
-
-// 重载 new 和 delete，其实就是运算符重载
-inline void *operator new(size_t size)
-{
-    cout << "size: " << size << ' ';
-    cout <<"you call global new()\n";
-    return my_Alloc(size);
-}
-
-inline void *operator new(size_t size, int extra)
-{
-    cout << "extra: " << extra << endl;
-    return my_Alloc(size + extra);
-}
-
-inline void operator delete(void *ptr)
-{
-    cout << "you call global delete delete()\n";
-    my_Free(ptr);
-}
-
-inline void *operator new[](size_t size)
-{
-    cout << "size: " << size << ' ';
-    cout << "you call global new[]()\n";
-    return my_Alloc(size);
-}
-
-
-inline void operator delete[](void *ptr)
-{
-    cout << "you call global delete[]\n";
-    my_Free(ptr);
-}
-
-void test(void *ptr)
-{
-    cout << "you call test" << endl;
-}
-
-struct Foo
-{
-    public:
-        Foo() { 
-            cout << "Foo::Foo()" << endl; 
-        }
-        Foo(int x) { 
-            cout << "Foo::Foo(int)" << endl;
-            throw -1;
-        } 
-        ~Foo() { // 我们这里写析构函数只是为了测试，实际上Foo类并不需要析构函数
-            cout << "Foo::~Foo()" << endl;
-        }
-                
-        static void *operator new(size_t size)
-        {
-            cout << "size: " << size << ' ';
-            cout <<"you call Foo new()\n";
-            return my_Alloc(size);
-        }
-        
-        static void operator delete(void *ptr)
-        {
-            cout << "you call Foo delete delete()\n";
-            my_Free(ptr);
-        }
-        
-        static void *operator new[](size_t size)
-        {
-            cout << "size: " << size << ' ';
-            cout << "you call Foo new[]()\n";
-            return my_Alloc(size);
-        }
-        
-        
-        static void operator delete[](void *ptr)
-        {
-            cout << "you call Foo delete[]\n";
-            my_Free(ptr);
-        }
-        
-        virtual void func() {}  // 虚函数表占 8 字节
-        int data;
-};
-
-int main()
-{
-    /*  测试 delete 和 new  */
-    int *a = new int;
-    double *b = new double;
-    test(a);
-    test(b);
-    delete a;
-    delete b;
-    cout << "---------------------------" << endl;
-    cout << "---------------------------" << endl;
-    
-    
-    /* 测试 delete array 和 new array */
-    int *arr = new int[10];
-    delete[] arr;
-    cout << "---------------------------" << endl;
-    cout << "---------------------------" << endl;
-
-
-    /* 测试在 class 上 new 和 delete */
-    Foo singleF;
-    cout << "sizeof(Foo) = " << sizeof(singleF) << endl;
-    Foo *f = new Foo[5];
-    delete[] f;
-    Foo *f2 = ::new Foo[5];
-    ::delete[] f;
-    // Foo *wf = new Foo(1);   // throw exception: terminate called after throwing an instance of 'int'
-    cout << "---------------------------" << endl;
-    cout << "---------------------------" << endl;
-    
-    
-    /* placement new */
-    int *pn = new(1) int; // new只传入一个参数
-    delete pn;
-    
-    return 0;
-}
-```
-
-
-
-# 六、异常处理
-
-
-
-
-
-# C++ 新时代
-
-
-
-# 七、 C++ 2.0
-
-## 0x01. Revolution of C++
-
-### 1. C++ 的标准演化
-
-```
-C++98 (c++ 1.0)
 C++03
-C++11 (C++ 2.0)
+
+C++11(2.0)
+
 C++14
-```
 
-### 2. C++ 2.0之后更新的小主题
 
-> 其实就是我不想太详细的做笔记了 T.T
 
-1. **header:** 在引入 C头文件的时候不需要加 .c 后缀是在 C++11 引入的。
 
-2. **space in template expression**:  类似于：`vector<vector<int>> v;` 最后的两个 `>` 之间不再需要空格。
 
-   
 
-3. **auto：**不要滥用 auto，编译器的类型推导在 C++ 11 之前就已经存在了，只不过在 C++11 之后才把这个功能提供给我们。
 
-4. 全局函数 `begin()` 和 `end()`，取代 `obj.begin()` 为 `begin(obj)`。
 
-## 0x02. Variadic Templates
 
-7大例子
 
-## 0x03. nullptr and std::nullptr_t
 
-C++11 lets you use nullptr instead of 0 or NULL to specify that a pointer refers to no value(with differs from habing an undefined value). 
 
-用法：`void *p = nullptr;`
 
-nullptr 的一个好处是它显示的指明：我是一个空指针。
 
-而在次之前，我们使用 NULL 来表示空指针，但其实 NULL 只不过是一个值为 0 的宏罢了，它也可以被解释成其他类型，例如整形，浮点型等。
 
-但是 nullptr 只能被解释为指针，这在下图的例子中深有体现：
 
-![IMG](https://s3.bmp.ovh/imgs/2022/10/26/4b9ea5742d3f1eea.png)
 
-``` C++
-#include <iostream>
-using namespace std;
 
-void f(int x)
-{
-    cout << "I am int" << endl;
-}
 
-void f(void *x)
-{
-    cout << "I am pointer" << endl;
-}
 
-int main()
-{
-    f(0);       // "I am int"
-    // f(NULL); // ambigious
-    f(nullptr); // "I am pointer"
-    return 0;
-}
-```
 
 
 
-## 0x04 Uniform Initializarion
 
-一致性初始化。
 
-在 C++11 之前，对象的初始化可能发生在：
 
-1. 大括号 {} 之后
-2. 小括号 () 之后
-3. 赋值运算符之后
 
-这让人很迷惑，到底什么时候用什么样的初始化方式呢？
 
-基于这个原因，C++11 统一使用大括号 {} 来初始化。当然，之前的小括号和赋值也会向前兼容。
 
-**原理：**编译器会把大括号 {} 内的所有参数**打包**到一个数据结构 `initializer_list<>` 中，形成一个**数据包**，并关联到一个 `array<T,n>` 容器中，`T` 是类型，`n` 是参数。当我们调用函数的时候（例如 ctor），`array` 内的所有元素会被编译器逐一分解给函数。但若函数参数是个 `initializer<_list>`，不会自动分解，也就是说，传给函数参数的仍然是数据包 `initializer_list<int>`，而不是单一的一个个 `<int>` 数据。（很合理）
 
-![img](https://s3.bmp.ovh/imgs/2022/10/26/080a6ee4df06aa92.png)
 
 
 
-## 0x05 Initializer lists
 
-用于初始化，并且可以默认初始化，在 gcc 平台上还可以做隐式类型转换。(注意在投影片中不可以做隐式类型转换，这应该是编译器平台的问题，不必深究)
 
-![img](https://s3.bmp.ovh/imgs/2022/10/26/b4766877737c31e2.png)
 
 
 
-### 1. Initializaer lists 的底层结构：
 
-### `initializer_list<>`
 
-![IMG](https://s3.bmp.ovh/imgs/2022/10/26/a00c529e01d71682.png)
 
 
 
-Initializer_list<> 和 Variadic Templates 的区别在于前者只能传入统一类型的参数，而后者可以传入不同类型的参数
 
-例如：
 
-``` C++
-#include <iostream>
 
-using namespace std;
 
-void print(initializer_list<int> vals)
-{
-    for(auto p = vals.begin(); p != vals.end(); p ++ )
-        cout << *p << endl;
-}
 
-int main()
-{
-    print({1,2,3,4,5});
-    return 0;
-}
-```
 
-``` C++ 
-#include <iostream>
 
-using namespace std;
 
-class p
-{
-    public:
-        p(int a, int b)
-        {
-            cout << "P(int,int), a = " << a << ' ' << "b = " << b << endl;
-        }
-        p(initializer_list<int> list)
-        {
-            cout << "P(Initializer_list<int>), val = ";
-            for(initializer_list<int>::iterator it = list.begin(); it != list.end(); it ++ )
-                cout << *it << ' ';
-            cout << endl;
-        }
-};
 
-int main()
-{
-    p a(1,2);
-    p b{1,2};
-    p c{1,2,3};
-    p d = {1,2};
-    return 0;
-}
-/*
-P(int,int), a = 1 b = 2
-P(Initializer_list<int>), val = 1 2 
-P(Initializer_list<int>), val = 1 2 3 
-P(Initializer_list<int>), val = 1 2 
-*/
-```
 
-下图中包含了 `initializer_list<int>` 的源码，编译器会调用它的私有的构造函数，将一个容器 `array` 的头和大小传给它（当然，在此之前，编译器已经构造好了一个 `array` 容器）。
 
-> 编译器拥有无上权限，它可以调用你的私有对象！
 
-![IMG](https://s3.bmp.ovh/imgs/2022/10/26/5fba537fae2977b6.png)
 
 
 
-如上图，在 `class initializer_list<>` 源代码中，我们可以发现它内部并没有包含元素，所有的元素都在 `array` 中，而它只是包含一个指向 `array` 的指针。
 
-所以说如果我们 copy `initializer_list<int>` ，实际上是一个浅拷贝。
 
-`initializer_list<>` 被广泛应用于容器和算法当中，也就是说这些容器和算法都可以接受任意数量的参数。
 
-### 2. 关联的容器 array
 
 
 
-`array` 就是数组的另一种表现性质，只不过它现在是一个容器，可以利用容器的很多接口，例如迭代器 begin(), end(), 和算法等。
-
-在 array 容器中，如果你传入的长度是 0，它内部会变为 1，毕竟长度为 0 的容器不太合理。。 `len ? len : 1;`
-
-
-
-如下图，红圈中的内容需要额外注意：
-
-![img](https://s3.bmp.ovh/imgs/2022/10/26/0fd7a98ee82afd23.png)
-
-
-
-
-
-
-
-## 0x06 explicit
-
-
-
->  构造函数的类型
-
-**构造函数**分为无参构造函数，和有参构造函数。有参构造函数又分为单参数构造函数和多参数构造函数
-
-**C++中存在隐式构造的现象：在某些情况下，会隐式调用单参数的构造函数**
-
-总而言之，大概就是 `A a(10);` 就是显式调用构造函数。而 `A a = 10;` 就是显式的调用构造函数。
-
-但是这种隐式调用有些不太好，因为我们的本意可能不是调用构造函数，所以我们有了 explicit 关键字
-
-
-
->  explicit
-
-在C++中，`explicit`关键字用来修饰类的构造函数，被修饰的构造函数的类，不能发生相应的**隐式类型转换**，只能以显示的方式进行类型转换。因为无参构造函数和多参构造函数本身就是显示调用的。再加上`explicit`关键字也没有什么意义。
-
-在 C++2.0 之前，是  **explicit for ctor one argument**，这个我们前面已经介绍过了，不再多做介绍。
-
-在 C++2.0 之后，有了**explicit for ctors taking more than one argument**，我们发现多了一个 more than，这是因为 C++2.0 提供了一种新的语法：`initializer_list<>` ，这个我们前面也提到过了。所以说，现在我们不仅传入一个单参数会隐式调用  ctor，传入一个数据包也会调用  ctor。
-
-
-
-> 参考
-
-[implicit & explicit](https://blog.csdn.net/cpp_learner/article/details/117883912?spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-117883912-blog-84141043.pc_relevant_recovery_v2&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-117883912-blog-84141043.pc_relevant_recovery_v2&utm_relevant_index=2)
-
-[隐式构造函数](https://blog.csdn.net/weixin_45452278/article/details/126019006)
-
-
-
-> 举几个例子：
-
-例1：下面的代码可以正确运行，但如果我们将 p 的构造函数用关键字 explicit 修饰的话，编译器就会报错。 
-
-``` c++
-#include <iostream>
-using namespace std;
-
-class p
-{
-    public:    
-        p(int a, int b, int c) {
-            cout << "P(int,int,int), a = " << a << ' ' << "b = " << b 
-                << ", c = " << c << endl;
-        }
-};
-
-int main()
-{
-    p a = {1,2,3}; // 隐式类型转换
-
-    return 0;
-}
-```
-
-例2；下面的代码可以正确运行，但如果我们将 C 的构造函数用关键字 explicit 修饰的话，编译器就会报错。 
-
-``` C++
-#include <iostream>
-#include <vector>
-
-using namespace std;
-
-class C {
-    public:
-        C(string _s) : s(_s) {};
-        string s;
-};
-
-ostream& operator<<(ostream &os, const C c) {
-    return cout << c.s;
-}
-
-int main()
-{
-    vector<string> s = {
-        "hello", "world", "cpp"
-    };
-    for(const C &ele : s)  	// 隐式类型转换
-        cout << ele << endl;
-    return 0;
-}
-/*
-hello
-world
-cpp
-*/
-```
-
-但如果我们以如下方式进行 for 循环，那么程序依然可以正确执行，这是因为我们使用的不再是隐式类型转换，而是显式类型转换。
-
-``` C++
-for(auto &ele : s) {
-        cout << C(ele) << endl; // 显式类型转换
-    }
-```
-
-
-
-## 0x07 range-based for statement
-
-**range-based for statement**：即 for 函数
-
-有以下需要注意的点：
-
-1. 和 auto结合使用效果极佳。
-2. 关联式容器不可以用 auto 修改元素的值。
-3. for 的实质就是迭代器遍历。如下图所示：
-
-![IMG](https://s3.bmp.ovh/imgs/2022/10/26/8268f467b08cd0b7.png)
-
-
-
-
-
-## 0x08 =default, =delete
-
-一言以蔽之：=default 用来让编译器生成默认函数，=delete 用来删除编译器生成默认函数
-
-c++ 右值引用
-
-参考：
-
-> [big fice](https://blog.csdn.net/tutuxs/article/details/54947395)
->
-> [右值引用](http://c.biancheng.net/view/7829.html)
->
-> [=default, =delete](https://www.cnblogs.com/Braveliu/p/12247471.html)
-
-
-
-## 0x09 Alias Template
-
-
-
-## 0x0a decltype
-
-
-
-declareType
-
-当我们用了：：的时候，加上 typename 让编译器直到我们要的是一个类型。
-
-
-
-![img](file:///C:\Users\24072\AppData\Roaming\Tencent\Users\2407217576\QQ\WinTemp\RichOle\1[{%QORATSLSNBYEQMMPM[7.png)
-
-
-
-
-
-``` C++
-\
-    #include <iostream>
-#include <vector>
-#include <map>
-#include <set>
-
-using namespace std;
-
-template<typename T1, typename T2>
-auto add(T1 x, T1 y) -> decltype(x + y)
-{
-    return x + y;
-}
-
-int main()
-{
-    vector<vector<int>> vec;
-    decltype(vec)::value_type elem;
-    for(int i = 0; i < 3; i ++ )   elem.push_back(10);
-    
-    map<int,int> mp;
-    decltype(mp)::value_type pr = make_pair(2,2);
-    cout << pr.first << ' ' << pr.second << endl;
-    
-    // decltype for  return type
-    int a = 1;
-    double b = 2.23;
-    char c = 'A';
-    auto s = a + b;
-    cout << s << ' ' << sizeof(s) << endl; 
-    auto s2 = a + c;
-    cout << s2 << ' ' << sizeof(s2) << endl;
-    string str1 = "hello", str2 = ",world!";
-    auto s3 = str1 + str2;
-    cout << s3 << ' ' << sizeof(s3) << endl;
-    
-    
-    // used to pass the type of a lambda
-    set<int, greater<int>> S;
-    S.insert(343);
-    S.insert(34);
-    S.insert(44);
-    for(auto &x : S)    cout << x << endl;    
-    
-    return 0;
-}
-```
-
-[1](https://blog.csdn.net/hlsdbd1990/article/details/46439577)
-
-[2](https://www.cnblogs.com/huty/p/8517000.html)
-
-
-
-## 0x0b lambda
-
-
-
-``` C++
-#include <iostream>
-#include <cstring>
-#include <algorithm>
-#include <vector>
-#include <map>
-#include <set>
-
-using namespace std;
-
-template<typename T>
-class G
-{
-    public:
-        G() {
-            cout << "you get here!" << endl;
-        }
-        bool operator()(const T &a, const T &b) const { // 不加 const 报错
-            return a > b;
-        }
-};
-
-int main()
-{
-    auto cmp = [](int a, int b) -> bool {
-        return a > b;
-    };
-    set<int, decltype(cmp)> S1(cmp);  // 不加(cmp)报错
-    S1.insert(22);
-    S1.insert(11);
-    S1.insert(33);
-    for(auto &x : S1) cout << x << endl;
-    
-    cout << "---------------------" << endl;
-    
-    set<int, G<int>> S;  // ther call default ctor
-    S.insert(22);
-    S.insert(11);
-    S.insert(33);
-    for(auto &x : S) cout << x << endl;
-    
-    return 0;
-}
-```
 
 
 
