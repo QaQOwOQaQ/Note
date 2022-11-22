@@ -2634,7 +2634,108 @@ int main()
 
 ## 0x0b lambda
 
+### 1. 概念
 
+c++ 11 引入 lambda，可以定义内联函数
+
+可以用来作为参数或者函数对象
+
+可以直接写在一个 statements 或者 expression 里面作为匿名函数
+
+`[]() mutable(opt)  throsSpec(opt) -> retType(opt) {} `
+
+其中，有三个 `opt`（可选的），如果这三个都没选，`()` 就可以不加，但是只要有一个存在，就必须有 小括号 `()`
+
+lambda 只能捕获在它之前出现的变量，在它后面出现的它“不认识”
+
+对于 value 传递，它不会感受在它之后发生的变化。
+
+对于 reference 传递，后续的变化会改变到。
+
+是否感知后续的变化应该是 lambda 使能的，也就是说它会根据是否是 by reference 而主动的监听。
+
+lambda 直接传给 set不行，因为 lambda 定义的是一个对象，而模板参数是个类型，因此需要借用 decltype
+
+ lambda 像是一个重载了 () 的函数对象，但是它不同于函数对象。因为它不能定义构造函数。
+
+### 2. 测试程序1
+
+``` C++
+#include <iostream>
+#include <cstring>
+#include <algorithm>
+#include <set>
+
+using namespace std;
+
+void test1()
+{
+    // 无意义，定义了一个对象
+    [] {
+        cout << "hello,world!" << endl;
+    }; 
+    // 直接调用,但这种写法是脱裤子放屁--多此一举
+    [] {
+        cout << "hello,world!" << endl;
+    }();
+    // 把这个对象保存到 out，一般写法
+    auto out = [x=1] {
+        cout << "hello,world!" << endl;
+        cout << x << endl;
+    };
+    out();
+}
+
+void test2()
+{
+    int id = 100;
+    auto f = [id]() mutable {
+        cout << id << endl;
+        id ++ ;
+    };
+    id = 42;
+    f();    f();    f(); // 1 2 3
+    cout << id << endl; // 42
+}
+
+void test3()
+{
+    class Person {
+    public:
+        int val;
+    };
+    auto cmp = [&](const Person &x, const Person &y) {
+        return x.val > y.val;
+    };
+    set<Person, decltype(cmp)> s(cmp);
+    s.insert({1});
+    s.insert({2});
+    s.insert({3});
+    for(auto &x : s) {
+        cout << x.val << endl;
+    }
+}
+
+void test4()
+{
+    vector<int> v = {1,2,3,4,5,6,7,8,9};
+    auto pos = find_if(v.begin(), v.end(), [](int x){
+        return x >= 9;
+    }); // 这种形式不是 inline function
+    cout << *pos << endl;
+}
+
+int main()
+{
+    test4();
+    
+    return 0;
+}
+```
+
+
+
+### 3. 测试程序2
 
 ``` C++
 #include <iostream>
